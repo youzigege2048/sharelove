@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     FloatingActionButton news;
     Handler handler;
 
-    Animation mTranslateInAnimation, mTranslateOutAnimation;
+    Animation min1, min2, mout1, mout2;
 
     int is[] = {View.INVISIBLE, View.VISIBLE};
     int n = 0;
@@ -77,27 +77,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         handler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
-                news.startAnimation(mTranslateOutAnimation);
                 news.setVisibility(View.INVISIBLE);
+                flag = true;
                 super.handleMessage(msg);
             }
 
         };
 
-        // 定义进入与退出动画
-        mTranslateInAnimation = new TranslateAnimation(
-                Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0,
-                Animation.RELATIVE_TO_SELF, -1.5f, Animation.RELATIVE_TO_SELF,
-                0);
-        mTranslateInAnimation.setDuration(1000);
-
-        mTranslateOutAnimation = new TranslateAnimation(
+        min1 = new TranslateAnimation(
                 Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0,
                 Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF,
-                -1.5f);
-        mTranslateOutAnimation.setDuration(1000);
+                -0.5f);
+        min1.setDuration(1000);
 
-        mTranslateOutAnimation // 动画显示结束后将tv控件隐藏
+        min2 = new TranslateAnimation(
+                Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0,
+                Animation.RELATIVE_TO_SELF, -0.5f, Animation.RELATIVE_TO_SELF,
+                0);
+        min2.setDuration(1000);
+
+        min1 // 动画显示结束后将tv控件隐藏
                 .setAnimationListener(new Animation.AnimationListener() {
                     @Override
                     public void onAnimationStart(Animation animation) {
@@ -105,8 +104,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     @Override
                     public void onAnimationEnd(Animation animation) {
-                        news.setVisibility(View.INVISIBLE);
-                        flag = true; // 恢复响应
+                        news.startAnimation(min2);
                     }
 
                     @Override
@@ -124,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
 
                 // 显示消息框
-                news.startAnimation(mTranslateInAnimation);
+                news.startAnimation(min1);
                 news.setVisibility(View.VISIBLE);
 
                 new Thread() {
