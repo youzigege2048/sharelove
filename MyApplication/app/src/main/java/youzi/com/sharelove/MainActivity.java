@@ -1,5 +1,7 @@
 package youzi.com.sharelove;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
@@ -12,45 +14,35 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 
+import youzi.com.sharelove.modal.MusicWindow;
 import youzi.com.sharelove.view.fragment_about;
 import youzi.com.sharelove.view.fragment_listen;
 import youzi.com.sharelove.view.fragment_main;
+import youzi.com.sharelove.view.listenRoom;
+
+import static android.widget.RadioGroup.*;
 
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
+public class MainActivity extends AppCompatActivity implements OnClickListener {
     private SectionsPagerAdapter mSectionsPagerAdapter;
-
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
     private ViewPager mViewPager;
-    private Button button;
+    private Button TestBtn;
 
     FloatingActionButton news;
     Handler handler;
 
-    Animation min1, min2, mout1, mout2;
-
-    int is[] = {View.INVISIBLE, View.VISIBLE};
-    int n = 0;
-
+    Animation rightOut;
     boolean flag = true;
+
+    //自定义的弹出框类
+    MusicWindow menuWindow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,22 +50,55 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        button = (Button) findViewById(R.id.btn);
+        TestBtn = (Button) findViewById(R.id.btn);
         setSupportActionBar(toolbar);
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-        // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-
+        startActivity(new Intent(this, listenRoom.class));
         news = (FloatingActionButton) findViewById(R.id.news);
         news.setVisibility(View.GONE);
         news.setOnClickListener(this);
+        news.setScrollBarSize(20);
+
+        TestBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                menuWindow = new MusicWindow(MainActivity.this, itemsOnClick);
+                //显示窗口
+                menuWindow.showAtLocation(MainActivity.this.findViewById(R.id.fragment_main), Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0); //设置layout在PopupWindow中显示的位置
+                if (flag) { // 第一次点击按钮生效，在消息框退出前不响应点击
+                    flag = false;
+                } else {
+                    return;
+                }
+
+                // 显示消息框
+                news.startAnimation(rightOut);
+                news.setVisibility(View.VISIBLE);
+            }
+        });
+        init();
+    }
+
+    //为弹出窗口实现监听类
+    private OnClickListener itemsOnClick = new OnClickListener() {
+
+        public void onClick(View v) {
+            menuWindow.dismiss();
+            switch (v.getId()) {
+                default:
+                    break;
+            }
 
 
+        }
+
+    };
+
+    public void init() {
         handler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
@@ -84,61 +109,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         };
 
-        min1 = new TranslateAnimation(
-                Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0,
+        rightOut = new TranslateAnimation(
+                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0,
                 Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF,
-                -0.5f);
-        min1.setDuration(1000);
-
-        min2 = new TranslateAnimation(
-                Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0,
-                Animation.RELATIVE_TO_SELF, -0.5f, Animation.RELATIVE_TO_SELF,
                 0);
-        min2.setDuration(1000);
+        rightOut.setDuration(500);
 
-        min1 // 动画显示结束后将tv控件隐藏
-                .setAnimationListener(new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) {
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                        news.startAnimation(min2);
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {
-                    }
-                });
-
-        button.setOnClickListener(new View.OnClickListener() {
+        rightOut.setAnimationListener(new Animation.AnimationListener() {
             @Override
-            public void onClick(View v) {
-                if (flag) { // 第一次点击按钮生效，在消息框退出前不响应点击
-                    flag = false;
-                } else {
-                    return;
-                }
+            public void onAnimationStart(Animation animation) {
+            }
 
-                // 显示消息框
-                news.startAnimation(min1);
-                news.setVisibility(View.VISIBLE);
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                //news.startAnimation(inDown);
+            }
 
-                new Thread() {
-                    @Override
-                    public void run() {
-                        try {
-                            sleep(5000);
-                            handler.sendEmptyMessage(0);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }.start();
+            @Override
+            public void onAnimationRepeat(Animation animation) {
             }
         });
-
     }
 
     @Override
@@ -149,31 +139,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public void onClick(View v) {
 
         switch (v.getId()) {
             case R.id.news:
                 Snackbar.make(mViewPager, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+                handler.sendEmptyMessage(0);
                 return;
         }
     }
-
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -196,7 +171,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     return new fragment_about();
             }
             return null;
-
         }
 
         @Override

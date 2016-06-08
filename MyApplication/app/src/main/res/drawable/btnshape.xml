@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--点击背景-->
+    <item android:state_pressed="true">
+        <shape>
+            <!--圆角-->
+            <corners android:radius="90dp" />
+
+            <size android:width="50dp" android:height="50dp" />
+            <!--渐变-->
+            <gradient android:angle="90" android:endColor="#fffaf0" android:startColor="#fffaf0" />
+            <!--文字内间距-->
+            <padding android:bottom="25dp" android:left="25dp" android:right="25dp" android:top="25dp" />
+        </shape>
+    </item>
+    <!--默认背景-->
+    <item>
+        <shape>
+            <corners android:radius="90dp" />
+
+            <size android:width="50dp" android:height="50dp" />
+
+            <gradient android:angle="90" android:endColor="#fffaf0" android:startColor="#fffaf0" />
+
+            <padding android:bottom="25dp" android:left="25dp" android:right="25dp" android:top="25dp" />
+
+        </shape>
+    </item>
+</selector>
