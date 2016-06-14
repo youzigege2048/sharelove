@@ -4,7 +4,6 @@ package youzi.com.sharelove.modal;
  * Created by youzi on 2016/6/8.
  */
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
@@ -19,6 +18,9 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import youzi.com.sharelove.R;
 
 public class MusicWindow extends PopupWindow {
@@ -26,14 +28,16 @@ public class MusicWindow extends PopupWindow {
 
     private Button btn_cancel;
     private View mMenuView;
-    ListView musiclistV;
+    public ListView musiclistV;
     WindowManager PhoneInfo;
 
     final String[] strs = new String[]{
             "first", "second", "third", "fourth", "fifth", "second", "third", "fourth", "fifth", "second", "third", "fourth", "fifth", "second", "third", "fourth", "fifth", "second", "third", "fourth", "fifth"
     };
 
-    public MusicWindow(Activity context, OnClickListener itemsOnClick) {
+    public List<String> musiclist;
+
+    public MusicWindow(Context context, OnClickListener itemsOnClick) {
         super(context);
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -72,6 +76,20 @@ public class MusicWindow extends PopupWindow {
         });
     }
 
+    @Override
+    public void dismiss() {
+        float ff = 1.0f;
+        mMenuView.setAlpha(ff);
+        super.dismiss();
+    }
+
+    public void setMusiclist(List<Musicinfo> musicinfos) {
+        musiclist.clear();
+        for (int i = 0; i < musicinfos.size(); i++) {
+            musiclist.add(musicinfos.get(i).name);
+        }
+    }
+
     void init() {
         /*
         * 获取设备窗体信息
@@ -79,13 +97,14 @@ public class MusicWindow extends PopupWindow {
         PhoneInfo = (WindowManager) mMenuView.getContext()
                 .getSystemService(Context.WINDOW_SERVICE);
 
+        musiclist = new ArrayList<>();
 
         /*
         * 初始化音乐列表
         * */
         musiclistV = (ListView) mMenuView.findViewById(R.id.listV);
         musiclistV.setAdapter(new ArrayAdapter<String>(mMenuView.getContext(),
-                android.R.layout.simple_list_item_1, strs));
+                android.R.layout.simple_list_item_1, musiclist));
 
     }
 

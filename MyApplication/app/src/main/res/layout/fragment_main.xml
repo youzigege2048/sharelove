@@ -7,91 +7,132 @@
     android:orientation="vertical"
     android:paddingTop="@dimen/activity_vertical_margin">
 
-    <youzi.com.sharelove.modal.WordView
-        android:id="@+id/text"
-        android:layout_width="match_parent"
-        android:layout_height="250dp" />
+
+    <RelativeLayout
+        android:id="@+id/discwindows"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="120dp"></RelativeLayout>
 
     <TextView
-        android:id="@+id/section_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:id="@+id/num"
+        android:layout_width="fill_parent"
+        android:layout_height="20dp"
+        android:gravity="right"
+        android:paddingRight="10dp"
+        android:text="听众：23" />
 
-
-    <!--<LinearLayout-->
-    <!--android:layout_width="fill_parent"-->
-    <!--android:layout_height="50dp"-->
-    <!--android:layout_alignParentBottom="true">-->
-
-
-    <!--<Button-->
-    <!--android:id="@+id/next"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_alignBottom="@+id/playss"-->
-    <!--android:layout_toEndOf="@+id/playss"-->
-    <!--android:background="@drawable/btnshape"-->
-    <!--android:text="下一首" />-->
-
-
-    <co.mobiwise.playerview.MusicPlayerView
-        android:id="@+id/play"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:visibility="gone" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_alignParentBottom="true"
-        android:orientation="horizontal">
-
-
-        <co.mobiwise.playerview.MusicPlayerView
-            android:id="@+id/playss"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            app:buttonColor="#ff0028" />
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:paddingLeft="10dp">
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_weight="60"
-                android:gravity="center_vertical"
-                android:text="红色高跟鞋"
-                android:textSize="15sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_weight="40"
-                android:gravity="top"
-                android:text="蔡健雅"
-                android:textColor="#BABABA"
-                android:textSize="10sp" />
-        </LinearLayout>
-
-        <co.mobiwise.playerview.MusicPlayerView
-            android:id="@+id/plays"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            app:buttonColor="#ff0028"
-            app:textColor="#80FFFFFF"
-            app:textSize="14sp" />
+    <RelativeLayout
+        android:id="@+id/wordwindows"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="120dp"
+        android:padding="50dp">
 
         <ImageView
-            android:layout_width="45dp"
-            android:layout_height="45dp"
+            android:id="@+id/headIcon"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/mainincon" />
+
+
+        <TextView
+            android:id="@+id/room"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_below="@+id/headIcon"
+            android:gravity="center"
+            android:text="房间号：233" />
+
+        <TextView
+            android:id="@+id/signature"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_below="@+id/room"
+            android:gravity="center"
+            android:text="巴拉巴拉个性签名" />
+
+        <TextView
+            android:id="@+id/musicname"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_below="@+id/signature"
+            android:layout_margin="20dp"
+            android:gravity="center"
+            android:text="red" />
+
+        <youzi.com.sharelove.modal.WordView
+            android:id="@+id/words"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/musicname" />
+
+    </RelativeLayout>
+
+
+    <TextView
+        android:id="@+id/progress"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_alignTop="@+id/buttombar"
+        android:gravity="center"
+        android:text="02:33" />
+
+    <RelativeLayout
+        android:id="@+id/buttombar"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_alignParentBottom="true"
+        android:padding="10dp">
+
+        <ImageView
+            android:id="@+id/settting"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
             android:scaleType="fitCenter"
-            android:src="@drawable/playbar_btn_next" />
-    </LinearLayout>
+            android:src="@drawable/settting" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true">
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical"
+                android:scaleType="fitCenter"
+                android:src="@drawable/lastbtn"
+                android:id="@+id/lastbtn" />
+
+            <ImageView
+                android:id="@+id/play"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true" />
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical"
+                android:scaleType="fitCenter"
+                android:src="@drawable/nextbtn"
+                android:id="@+id/nextbtn" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/list"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/list" />
+    </RelativeLayout>
 
 </RelativeLayout>

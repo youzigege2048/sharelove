@@ -16,9 +16,7 @@ public class fragment_about extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_listen, container, false);
-        TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-        textView.setText("来自一份爱意的歌单");
+        View rootView = inflater.inflate(R.layout.about, container, false);
         return rootView;
     }
 }

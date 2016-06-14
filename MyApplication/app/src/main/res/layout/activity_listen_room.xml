@@ -18,37 +18,44 @@
         android:id="@+id/startbtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/btnshape"
-        android:text="New Button"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/btnshape"
+        android:text="New Button" />
 
     <TextView
-        android:id="@+id/room"
+        android:id="@+id/roomid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/text"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp"
-        android:text="房间号" />
+        android:gravity="center"
+        android:text="房间号"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true" />
 
     <TextView
         android:id="@+id/musicname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="歌曲名"
         android:layout_above="@+id/startbtn"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:text="歌曲名" />
 
     <TextView
         android:id="@+id/signature"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/startbtn"
-        android:layout_alignStart="@+id/startbtn"
-        android:layout_below="@+id/room"
+        android:layout_above="@+id/musicname"
+        android:layout_centerHorizontal="true"
         android:gravity="center"
-        android:text="签名"
-        android:layout_above="@+id/musicname" />
+        android:text="签名" />
+
+    <TextView
+        android:id="@+id/num"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/startbtn"
+        android:layout_alignParentStart="true"
+        android:text="听众：23" />
 
 </RelativeLayout>

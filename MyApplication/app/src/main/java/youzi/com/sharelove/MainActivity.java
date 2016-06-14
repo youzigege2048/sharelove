@@ -1,7 +1,8 @@
 package youzi.com.sharelove;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
@@ -20,8 +21,14 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
+import android.widget.Toast;
 
+import youzi.com.sharelove.modal.Config;
 import youzi.com.sharelove.modal.MusicWindow;
+import youzi.com.sharelove.modal.internet.Form;
+import youzi.com.sharelove.modal.internet.GetRoomInfo;
+import youzi.com.sharelove.modal.internet.HttpMethod;
+import youzi.com.sharelove.modal.sql.sqlbase.Appinfo_DbService;
 import youzi.com.sharelove.view.fragment_about;
 import youzi.com.sharelove.view.fragment_listen;
 import youzi.com.sharelove.view.fragment_main;
@@ -44,10 +51,13 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     //自定义的弹出框类
     MusicWindow menuWindow;
 
+    private Appinfo_DbService appinfo_dbService;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        appinfo_dbService = Appinfo_DbService.getDbService_Appinfo(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         TestBtn = (Button) findViewById(R.id.btn);
@@ -57,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        startActivity(new Intent(this, listenRoom.class));
+//        startActivity(new Intent(this, listenRoom.class));
         news = (FloatingActionButton) findViewById(R.id.news);
         news.setVisibility(View.GONE);
         news.setOnClickListener(this);
@@ -92,13 +102,17 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
                 default:
                     break;
             }
-
-
         }
 
     };
 
     public void init() {
+        //版本初始化
+        if (appinfo_dbService.getCount() <= 0) {
+            initToken(this);
+        } else {
+            appinfo_dbService.initToken(this.getApplication());
+        }
         handler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
@@ -131,19 +145,13 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         });
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
 
     @Override
     public void onClick(View v) {
 
         switch (v.getId()) {
             case R.id.news:
-                Snackbar.make(mViewPager, "Replace with your own action", Snackbar.LENGTH_LONG)
+                Snackbar.make(mViewPager, "这是个推送消息~~~", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
                 handler.sendEmptyMessage(0);
                 return;
@@ -179,5 +187,22 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
             return 3;
         }
 
+    }
+
+    public void initToken(final Activity activity) {
+        Form form = new Form(Config.RegisterTokenUrl);
+        new GetRoomInfo(HttpMethod.GET, form, new GetRoomInfo.SuccessCallback() {
+            @Override
+            public void onSuccess(String result) {
+                System.out.println("token" + GetRoomInfo.getRoomToken(result));
+                appinfo_dbService.update_Token(GetRoomInfo.getRoomToken(result));
+                appinfo_dbService.initToken(activity.getApplication());
+            }
+        }, new GetRoomInfo.FailCallback() {
+            @Override
+            public void onFail(String result) {
+                Toast.makeText(activity, "注册Token失败！-" + result, Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }
