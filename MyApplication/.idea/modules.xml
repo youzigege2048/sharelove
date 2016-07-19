@@ -5,7 +5,6 @@
       <module fileurl="file://$PROJECT_DIR$/MyApplication.iml" filepath="$PROJECT_DIR$/MyApplication.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/datalibrary/datalibrary.iml" filepath="$PROJECT_DIR$/datalibrary/datalibrary.iml" />
-      <module fileurl="file://$PROJECT_DIR$/playerview/playerview.iml" filepath="$PROJECT_DIR$/playerview/playerview.iml" />
       <module fileurl="file://$PROJECT_DIR$/pullRefreshlibrary/pullRefreshlibrary.iml" filepath="$PROJECT_DIR$/pullRefreshlibrary/pullRefreshlibrary.iml" />
     </modules>
   </component>

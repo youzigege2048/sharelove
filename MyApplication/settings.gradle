@@ -1,2 +1,2 @@
-include ':app', ':playerview', ':datalibrary'
+include ':app', ':datalibrary'
 include ':pullRefreshlibrary'

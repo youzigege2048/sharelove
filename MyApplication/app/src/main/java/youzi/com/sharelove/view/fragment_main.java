@@ -3,6 +3,7 @@ package youzi.com.sharelove.view;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.SyncStatusObserver;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -103,7 +104,7 @@ public class fragment_main extends Fragment {
         discwindows.setVisibility(View.INVISIBLE);
         //初始化token
         token = ((BaseApplication) this.getActivity().getApplication()).getToken();
-
+        System.out.println("frag Token -> " + token);
 
         room = (TextView) rootView.findViewById(R.id.room);
         room.setText("23");
@@ -197,6 +198,12 @@ public class fragment_main extends Fragment {
         return rootView;
     }
 
+
+    //设置token
+    public void setToken(String token) {
+        this.token = token;
+    }
+
     /*
     * 音乐文件下载初始化
     * */
@@ -243,7 +250,7 @@ public class fragment_main extends Fragment {
                 iswordclose = false;
                 countdownThread.interrupt();
             }
-            System.out.println(" xxx " + musicinfo.dir);
+//            System.out.println(" xxx " + musicinfo.dir);
             //if (mPlayer != null) mPlayer.release();
             isWordListenerClose = false;
             mPlayer.reset();
@@ -472,15 +479,18 @@ public class fragment_main extends Fragment {
         Form form = new Form(Config.PostSongUrl + token);
         form.setKeyValues_post("song", songID);
         form.setKeyValues_post("rate", rate);
+//        System.out.println("songID");
         new PostRoom(form, new PostRoom.SuccessCallback() {
             @Override
             public void onSuccess(String token) {
                 isUpSong = false;
+//                System.out.println("songID suc" + token);
             }
         }, new PostRoom.FailCallback() {
             @Override
             public void onFail(String token) {
                 isUpSong = false;
+//                System.out.println("songID fail");
             }
         });
     }
@@ -492,7 +502,7 @@ public class fragment_main extends Fragment {
         new PostBoom(form, new PostBoom.SuccessCallback() {
             @Override
             public void onSuccess(String token) {
-                System.out.println("up boom suc!");
+//                System.out.println("up boom suc!");
             }
         }, new PostBoom.FailCallback() {
             @Override
@@ -506,6 +516,7 @@ public class fragment_main extends Fragment {
         //musicinfo = new Musicinfo("红色高跟鞋", "蔡健雅", Environment.getExternalStorageDirectory() + "/Download/hongse.mp3", Environment.getExternalStorageDirectory() + "/Download/hongse.lrc");
         //handlerUpdate.sendEmptyMessage(0);
         //nowplay(musicinfo);
+//        System.out.println("updateRoom");
         Form form = new Form(Config.GetSongUrl + token);
         new GetRoomInfo(HttpMethod.GET, form, new GetRoomInfo.SuccessCallback() {
             @Override
@@ -514,24 +525,8 @@ public class fragment_main extends Fragment {
                     Musicinfo temp = GetRoomInfo.getNowMusicinfo(result);
                     musicinfo.num = temp.num;
                     musicinfo.signature = temp.signature;
-                    handlerUpdate.sendEmptyMessage(0);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new GetRoomInfo.FailCallback() {
-            @Override
-            public void onFail(String result) {
-            }
-        });
-        Form form2 = new Form(Config.GetSongUrl + token);
-        new GetRoomInfo(HttpMethod.GET, form2, new GetRoomInfo.SuccessCallback() {
-            @Override
-            public void onSuccess(String result) {
-                try {
-                    Musicinfo temp = GetRoomInfo.getNowMusicinfo(result);
-//                    System.out.println("xxxxxxxxxxxxxxxxxxxx");
                     roomid = Integer.parseInt(temp.id);
+//                    System.out.println("id");
                     handlerUpdate.sendEmptyMessage(0);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -540,9 +535,26 @@ public class fragment_main extends Fragment {
         }, new GetRoomInfo.FailCallback() {
             @Override
             public void onFail(String result) {
-                System.out.println("获取房间ID错误~");
             }
         });
+//        Form form2 = new Form(Config.GetSongUrl + token);
+//        new GetRoomInfo(HttpMethod.GET, form2, new GetRoomInfo.SuccessCallback() {
+//            @Override
+//            public void onSuccess(String result) {
+//                try {
+//                    Musicinfo temp = GetRoomInfo.getNowMusicinfo(result);
+////                    System.out.println("xxxxxxxxxxxxxxxxxxxx");
+//                    handlerUpdate.sendEmptyMessage(0);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }, new GetRoomInfo.FailCallback() {
+//            @Override
+//            public void onFail(String result) {
+//                System.out.println("获取房间ID错误~");
+//            }
+//        });
     }
 }
 

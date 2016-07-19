@@ -1,1 +1,5 @@
-# sharelove create by youzi for mylover
+# 
+一款基于安卓开发的音乐同步直播App——ShareLove
+
+功能：
+	分享当前你的直播间所播放的音乐

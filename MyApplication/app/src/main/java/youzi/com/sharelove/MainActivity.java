@@ -1,6 +1,7 @@
 package youzi.com.sharelove;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
@@ -42,8 +43,10 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     private ViewPager mViewPager;
     private Button TestBtn;
 
+    private ProgressDialog loadingdialog;//初始化加载
+
     FloatingActionButton news;
-    Handler handler;
+    Handler handler, startHandler;
 
     Animation rightOut;
     boolean flag = true;
@@ -58,14 +61,18 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         appinfo_dbService = Appinfo_DbService.getDbService_Appinfo(this);
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         TestBtn = (Button) findViewById(R.id.btn);
         setSupportActionBar(toolbar);
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         mViewPager = (ViewPager) findViewById(R.id.container);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
+        startHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                mViewPager.setAdapter(mSectionsPagerAdapter);
+            }
+        };
 
 //        startActivity(new Intent(this, listenRoom.class));
         news = (FloatingActionButton) findViewById(R.id.news);
@@ -107,11 +114,27 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     };
 
     public void init() {
+        loadingdialog = ProgressDialog.show(this, null, "程序正在初始化，请稍候...", true, false);
+        loadingdialog.onStart();
         //版本初始化
         if (appinfo_dbService.getCount() <= 0) {
             initToken(this);
         } else {
+//            initToken(this);
+            startHandler.sendEmptyMessage(0);
             appinfo_dbService.initToken(this.getApplication());
+            //故意等待
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    loadingdialog.dismiss();
+                }
+            }).start();
         }
         handler = new Handler() {
             @Override
@@ -194,14 +217,27 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         new GetRoomInfo(HttpMethod.GET, form, new GetRoomInfo.SuccessCallback() {
             @Override
             public void onSuccess(String result) {
-                System.out.println("token" + GetRoomInfo.getRoomToken(result));
+//                System.out.println("token" + GetRoomInfo.getRoomToken(result));
                 appinfo_dbService.update_Token(GetRoomInfo.getRoomToken(result));
                 appinfo_dbService.initToken(activity.getApplication());
+                startHandler.sendEmptyMessage(0);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(2000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        loadingdialog.dismiss();
+                    }
+                }).start();
             }
         }, new GetRoomInfo.FailCallback() {
             @Override
             public void onFail(String result) {
                 Toast.makeText(activity, "注册Token失败！-" + result, Toast.LENGTH_LONG).show();
+//                finish();
             }
         });
     }

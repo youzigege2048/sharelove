@@ -42,15 +42,15 @@ public class listenRoom extends AppCompatActivity {
     private List<Integer> mTimeList;
     private MediaPlayer mPlayer;
     final Handler handler = new Handler();
-    Handler handlerUpdate;
-    Musicinfo musicinfo;
-    int progressi = -1;
+    Handler handlerUpdate;//更新房间信息
+    Musicinfo musicinfo;//歌曲信息modal
+    int progressi = -1;//歌曲进度
 
     String roomtoken;
     String roomId;
 
-    boolean isclose = false;
-    boolean iswordclose;
+    boolean isclose = false;//检测当前页面是否关闭
+    boolean iswordclose;//检测歌词是否关闭
     boolean isNet;//保证每次只有一个网络线程在运行
     boolean isPause;
 
@@ -79,7 +79,7 @@ public class listenRoom extends AppCompatActivity {
         init();
         mWordView = (WordView) findViewById(R.id.text);
 //
-        musicinfo = new Musicinfo("1", "红色高跟鞋x", "蔡健雅", Environment.getExternalStorageDirectory() + "/Download/hongse.mp3", Environment.getExternalStorageDirectory() + "/Download/hongse.lrc", "10000");
+        musicinfo = new Musicinfo("1", "红色高跟鞋", "蔡健雅", Config.DownloadDir + "红色高跟鞋.mp3", Config.DownloadDir + "红色高跟鞋.lrc", "10000");
 
         num.setText(i.getStringExtra("num"));
         signature.setText(i.getStringExtra("signature"));
@@ -97,6 +97,7 @@ public class listenRoom extends AppCompatActivity {
         checkUpdate();
     }
 
+    //当前播放的音乐方法，传进某首歌就立即切换
     public void nowplay(Musicinfo musicinfo) {
         if (isPause) return;//如果暂停就不播放
         if (wordThread != null) {
@@ -115,7 +116,7 @@ public class listenRoom extends AppCompatActivity {
             mWordView.setmWordsList(lrcHandler.getWords());
             mPlayer.setDataSource(musicinfo.dir);
             mPlayer.prepare();
-            mPlayer.seekTo(Integer.parseInt(musicinfo.rate) + 900);
+            mPlayer.seekTo(Integer.parseInt(musicinfo.rate) + 800);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -127,13 +128,14 @@ public class listenRoom extends AppCompatActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            finish();
             if (mPlayer != null) mPlayer.release();
             isclose = true;
+            finish();
         }
         return super.onKeyDown(keyCode, event);
     }
 
+    //歌词监听
     public void wordListener() {
         if (isWordListenerClose) return;//如果已经打开过一个监听就不打开了
         isWordListenerClose = true;
@@ -190,6 +192,7 @@ public class listenRoom extends AppCompatActivity {
     }
 
 
+    //初始化页面控件
     public void init() {
         startBtn.setText("暂停");
         is = true;
@@ -269,6 +272,7 @@ public class listenRoom extends AppCompatActivity {
         });
     }
 
+    //检查房间更新的线程
     public void checkUpdate() {
         isNet = false;
         checkThread = new Thread(new TimerTask() {
@@ -291,11 +295,8 @@ public class listenRoom extends AppCompatActivity {
     }
 
     public void updateRoom() {
-        if (isNet) return;
+        if (isNet) return;//每次只保证一个线程在检查
         isNet = true;
-        //musicinfo = new Musicinfo("红色高跟鞋", "蔡健雅", Environment.getExternalStorageDirectory() + "/Download/hongse.mp3", Environment.getExternalStorageDirectory() + "/Download/hongse.lrc");
-        //handlerUpdate.sendEmptyMessage(0);
-        //nowplay(musicinfo);
         if (isclose)
             return;
         Form form = new Form(Config.GetSongUrl + roomtoken);
@@ -312,6 +313,9 @@ public class listenRoom extends AppCompatActivity {
                         temp.lrc = Config.DownloadDir + temp.name + ".lrc";
                         musicinfo = temp;
 //                        System.out.println(musicinfo.id + " - " + musicinfo.name + " " + musicinfo.rate);
+                        if (mPlayer != null && Math.abs(Integer.parseInt(musicinfo.rate) - mPlayer.getCurrentPosition()) < 300) {
+                            musicinfo.rate = mPlayer.getCurrentPosition() + "";
+                        }
                         handlerUpdate.sendEmptyMessage(0);
                         nowplay(musicinfo);
                     }
